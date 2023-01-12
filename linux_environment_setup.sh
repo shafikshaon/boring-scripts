@@ -1,11 +1,10 @@
 #!/bin/bash
 
 center() {
-printf '=%.0s' $(seq 1 $(tput cols))
-echo "$1" | sed  -e :a -e "s/^.\{1,$(tput cols)\}$/ & /;ta" | tr -d '\n' | head -c $(tput cols)
-printf '=%.0s' $(seq 1 $(tput cols)) | sed 's/^ //'
+  printf '=%.0s' $(seq 1 $(tput cols))
+  echo "$1" | sed -e :a -e "s/^.\{1,$(tput cols)\}$/ & /;ta" | tr -d '\n' | head -c $(tput cols)
+  printf '=%.0s' $(seq 1 $(tput cols)) | sed 's/^ //'
 }
-
 
 printf "\n"
 center "Updating system"
@@ -24,7 +23,6 @@ printf "\n"
 printf "\n"
 center "Install basic packages"
 printf "\n"
-
 
 echo -n 'Do you want to install basic packages (Y/n)? '
 read basic_packages_confirmation
@@ -81,8 +79,8 @@ echo -n 'Do you want to install Postgresql (Y/n)? '
 read postgresql_confirmation
 
 # 0
-install_basic_packages(){
-    sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2
+install_basic_packages() {
+  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2
 }
 
 # 1
@@ -208,8 +206,8 @@ install_nodesjs() {
   wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
   nvm install node -y
   export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
   printf "\n"
   center "NodeJS installed successfully."
   printf "\n"
@@ -290,7 +288,7 @@ install_jetbrains_toolbox() {
   printf "\n"
   wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.27.2.13801.tar.gz
   sudo tar xzf jetbrains-toolbox-1.27.2.13801.tar.gz
-  cd jetbrains-toolbox-1.27.2.13801
+  cd jetbrains-toolbox-1.27.2.13801 || cd ..
   ./jetbrains-toolbox
   cd ..
   sudo rm -rf jetbrains-toolbox-1.27.2.13801.tar.gz
@@ -312,169 +310,150 @@ install_postgresql() {
 }
 
 # 0
-if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]
-then
-    install_basic_packages
+if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
+  install_basic_packages
 else
   printf "\n"
   center "Skipping basic pakages installing..."
   printf "\n"
 fi
 # 1
-if [ "$vs_code_confirmation" != "${vs_code_confirmation#[Yy]}" ]
-then
-    install_visual_studio_code_editor
+if [ "$vs_code_confirmation" != "${vs_code_confirmation#[Yy]}" ]; then
+  install_visual_studio_code_editor
 else
   printf "\n"
   center "Skipping VS Code installing..."
   printf "\n"
 fi
 # 2
-if [ "$java_confirmation" != "${java_confirmation#[Yy]}" ]
-then
-    install_java
+if [ "$java_confirmation" != "${java_confirmation#[Yy]}" ]; then
+  install_java
 else
   printf "\n"
   center "Skipping Java installing..."
   printf "\n"
 fi
 # 3
-if [ "$redis_confirmation" != "${redis_confirmation#[Yy]}" ]
-then
-    install_redis
+if [ "$redis_confirmation" != "${redis_confirmation#[Yy]}" ]; then
+  install_redis
 else
   printf "\n"
   center "Skipping Redis installing..."
   printf "\n"
 fi
 # 4
-if [ "$skype_confirmation" != "${skype_confirmation#[Yy]}" ]
-then
-    install_skype
+if [ "$skype_confirmation" != "${skype_confirmation#[Yy]}" ]; then
+  install_skype
 else
   printf "\n"
   center "Skipping Skype installing..."
   printf "\n"
 fi
 # 5
-if [ "$ssh_confirmation" != "${ssh_confirmation#[Yy]}" ]
-then
-    read -p "SSH email: "  email
-    install_ssh $email
+if [ "$ssh_confirmation" != "${ssh_confirmation#[Yy]}" ]; then
+  read -p "SSH email: " email
+  install_ssh $email
 else
   printf "\n"
   center "Skipping SSH Keys setup..."
   printf "\n"
 fi
 # 6
-if [ "$git_confirmation" != "${git_confirmation#[Yy]}" ]
-then
-    read -p "Git name: "  name
-    read -p "Git email: "  email
-    install_git $name $email
+if [ "$git_confirmation" != "${git_confirmation#[Yy]}" ]; then
+  read -p "Git name: " name
+  read -p "Git email: " email
+  install_git $name $email
 else
   printf "\n"
   center "Skipping SSH Keys installing..."
   printf "\n"
 fi
 # 7
-if [ "$slack_confirmation" != "${slack_confirmation#[Yy]}" ]
-then
-    install_slack
+if [ "$slack_confirmation" != "${slack_confirmation#[Yy]}" ]; then
+  install_slack
 else
   printf "\n"
   center "Skipping Slack installing..."
   printf "\n"
 fi
 # 8
-if [ "$postman_confirmation" != "${postman_confirmation#[Yy]}" ]
-then
-    install_postman
+if [ "$postman_confirmation" != "${postman_confirmation#[Yy]}" ]; then
+  install_postman
 else
   printf "\n"
   center "Skipping Postman installing..."
   printf "\n"
 fi
 # 9
-if [ "$vlc_confirmation" != "${vlc_confirmation#[Yy]}" ]
-then
-    install_vlc
+if [ "$vlc_confirmation" != "${vlc_confirmation#[Yy]}" ]; then
+  install_vlc
 else
   printf "\n"
   center "Skipping VLC installing..."
   printf "\n"
 fi
 # 10
-if [ "$nodejs_confirmation" != "${nodejs_confirmation#[Yy]}" ]
-then
-    install_nodejs
+if [ "$nodejs_confirmation" != "${nodejs_confirmation#[Yy]}" ]; then
+  install_nodejs
 else
   printf "\n"
   center "Skipping NodeJS installing..."
   printf "\n"
 fi
 # 11
-if [ "$sublime_confirmation" != "${sublime_confirmation#[Yy]}" ]
-then
-    install_sublime_text
+if [ "$sublime_confirmation" != "${sublime_confirmation#[Yy]}" ]; then
+  install_sublime_text
 else
   printf "\n"
   center "Skipping Sublime Text installing..."
   printf "\n"
 fi
 # 12
-if [ "$yarn_confirmation" != "${yarn_confirmation#[Yy]}" ]
-then
-    install_yarn
+if [ "$yarn_confirmation" != "${yarn_confirmation#[Yy]}" ]; then
+  install_yarn
 else
   printf "\n"
   center "Skipping Yarn installing..."
   printf "\n"
 fi
 # 13
-if [ "$rabbitmq_confirmation" != "${rabbitmq_confirmation#[Yy]}" ]
-then
-    install_rabbitmq
+if [ "$rabbitmq_confirmation" != "${rabbitmq_confirmation#[Yy]}" ]; then
+  install_rabbitmq
 else
   printf "\n"
   center "Skipping RabbitMQ installing..."
   printf "\n"
 fi
 # 14
-if [ "$docker_confirmation" != "${docker_confirmation#[Yy]}" ]
-then
-    install_docker
+if [ "$docker_confirmation" != "${docker_confirmation#[Yy]}" ]; then
+  install_docker
 else
   printf "\n"
   center "Skipping Docker installing..."
   printf "\n"
 fi
 # 15
-if [ "$zoom_confirmation" != "${zoom_confirmation#[Yy]}" ]
-then
-    install_zoom
+if [ "$zoom_confirmation" != "${zoom_confirmation#[Yy]}" ]; then
+  install_zoom
 else
   printf "\n"
   center "Skipping Zoom installing..."
   printf "\n"
 fi
 # 16
-if [ "$jetbrains_confirmation" != "${jetbrains_confirmation#[Yy]}" ]
-then
-    install_jetbrains_toolbox
+if [ "$jetbrains_confirmation" != "${jetbrains_confirmation#[Yy]}" ]; then
+  install_jetbrains_toolbox
 else
   printf "\n"
   center "Skipping Jetbrains Toolbox installing..."
   printf "\n"
 fi
 # 17
-if [ "$postgresql_confirmation" != "${postgresql_confirmation#[Yy]}" ]
-then
-    read -p "Set PostgreSQL password: "  postgresql_password
-    install_postgresql $postgresql_password
+if [ "$postgresql_confirmation" != "${postgresql_confirmation#[Yy]}" ]; then
+  read -p "Set PostgreSQL password: " postgresql_password
+  install_postgresql $postgresql_password
 else
   printf "\n"
   center "Skipping Postgresql installing..."
   printf "\n"
 fi
-
