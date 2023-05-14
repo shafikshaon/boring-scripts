@@ -93,9 +93,12 @@ read teamviewer_confirmation
 echo -n 'Do you want to install Python (Y/n)? '
 read python_confirmation
 
+echo -n 'Do you want to install Go (Y/n)? '
+read go_confirmation
+
 # 0
 install_basic_packages() {
-  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev gdebi
 }
 
 # 1
@@ -395,6 +398,18 @@ install_python() {
   printf "\n"
 }
 
+# 23
+install_go() {
+  printf "\n"
+  center "Installing Go..."
+  printf "\n"
+  wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+  printf "Add this 'export PATH=$PATH:/usr/local/go/bin' in path variable. ex ~/.profile"
+  printf "\n"
+  center "Go installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -584,5 +599,14 @@ if [ "$python_confirmation" != "${python_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping Python installing..."
+  printf "\n"
+fi
+
+# 23
+if [ "$go_confirmation" != "${$go_confirmation#[Yy]}" ]; then
+  install_go
+else
+  printf "\n"
+  center "Skipping Go installing..."
   printf "\n"
 fi
