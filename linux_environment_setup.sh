@@ -653,7 +653,7 @@ else
 fi
 
 # 24
-if [ "$aws_confirmation" != "${$aws_confirmation#[Yy]}" ]; then
+if [ "$aws_confirmation" != "${aws_confirmation#[Yy]}" ]; then
   install_aws
 else
   printf "\n"
@@ -662,7 +662,7 @@ else
 fi
 
 # 25
-if [ "$google_chrome_confirmation" != "${$google_chrome_confirmation#[Yy]}" ]; then
+if [ "$google_chrome_confirmation" != "${google_chrome_confirmation#[Yy]}" ]; then
   install_google_chrome
 else
   printf "\n"
