@@ -11,12 +11,7 @@ center() {
 printf "\n"
 center "Updating system"
 printf "\n"
-sudo apt-get update
-
-printf "\n"
-center "Upgrating system"
-printf "\n"
-sudo apt-get upgrade
+sudo apt-get update -y
 
 printf "\n"
 center "System updated and upgraded"
@@ -186,6 +181,7 @@ install_git() {
   sudo apt -y install git
   git config --global user.name $name
   git config --global user.email $email
+  git config --global init.defaultBranch main
   printf "\n"
   center "Git installed successfully."
   printf "\n"
@@ -252,7 +248,7 @@ install_sublime_text() {
   printf "\n"
   curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
   sudo add-apt-repository "deb https://download.sublimetext.com/ apt/stable/"
-  sudo apt install sublime-text
+  sudo apt install sublime-text -y
   printf "\n"
   center "Sublime Text installed successfully."
   printf "\n"
@@ -265,7 +261,7 @@ install_yarn() {
   printf "\n"
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  sudo apt install yarn
+  sudo apt install yarn -y
   printf "\n"
   center "Yarn installed successfully."
   printf "\n"
@@ -292,7 +288,7 @@ install_docker() {
   printf "\n"
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  sudo apt update
+  sudo apt update -y
   sudo apt install docker-ce docker-ce-cli containerd.io -y
   sudo usermod -aG docker $USER
   sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -354,7 +350,7 @@ install_nodejs() {
   center "Installing NodeJS..."
   printf "\n"
   curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-  sudo apt install nodejs
+  sudo apt install nodejs -y
   printf "\n"
   center "NodeJS installed successfully."
   printf "\n"
@@ -365,7 +361,7 @@ install_memcached() {
   printf "\n"
   center "Installing Memcached..."
   printf "\n"
-  sudo apt install memcached libmemcached-tools
+  sudo apt install memcached libmemcached-tools -y
   printf "\n"
   center "Memcached installed successfully."
   printf "\n"
@@ -460,8 +456,8 @@ install_copyq() {
   center "Installing CopyQ..."
   printf "\n"
   sudo add-apt-repository ppa:hluk/copyq
-  sudo apt update
-  sudo apt install copyq
+  sudo apt update -y
+  sudo apt install copyq -y
   printf "\n"
   center "CopyQ installed successfully."
   printf "\n"
