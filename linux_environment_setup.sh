@@ -54,8 +54,8 @@ read postman_confirmation
 echo -n 'Do you want to install VLC (Y/n)? '
 read vlc_confirmation
 
-echo -n 'Do you want to install NodeJS (Y/n)? '
-read nodejs_confirmation
+echo -n 'Do you want to install NVM (Node Version Manager) (Y/n)? '
+read nvm_confirmation
 
 echo -n 'Do you want to install Subblime Text (Y/n)? '
 read sublime_confirmation
@@ -78,9 +78,12 @@ read jetbrains_confirmation
 echo -n 'Do you want to install Postgresql (Y/n)? '
 read postgresql_confirmation
 
+echo -n 'Do you want to install NodeJS (Y/n)? '
+read nodejs_confirmation
+
 # 0
 install_basic_packages() {
-  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2
+  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 }
 
 # 1
@@ -199,17 +202,19 @@ install_vlc() {
 }
 
 # 10
-install_nodesjs() {
+install_nvm() {
   printf "\n"
-  center "Installing NodeJS..."
+  center "Installing NVM..."
   printf "\n"
-  wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+  wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
   nvm install node -y
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+  source ~/.bashrc
+  source ~/.zshrc
   printf "\n"
-  center "NodeJS installed successfully."
+  center "NVM installed successfully."
   printf "\n"
 }
 
@@ -309,6 +314,18 @@ install_postgresql() {
   printf "\n"
 }
 
+# 18
+install_nodejs() {
+  printf "\n"
+  center "Installing NodeJS..."
+  printf "\n"
+  curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  sudo apt install nodejs
+  printf "\n"
+  center "NodeJS installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -393,11 +410,11 @@ else
   printf "\n"
 fi
 # 10
-if [ "$nodejs_confirmation" != "${nodejs_confirmation#[Yy]}" ]; then
-  install_nodejs
+if [ "$nvm_confirmation" != "${nvm_confirmation#[Yy]}" ]; then
+  install_nvm
 else
   printf "\n"
-  center "Skipping NodeJS installing..."
+  center "Skipping NVM installing..."
   printf "\n"
 fi
 # 11
@@ -455,5 +472,13 @@ if [ "$postgresql_confirmation" != "${postgresql_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping Postgresql installing..."
+  printf "\n"
+fi
+# 18
+if [ "$nodejs_confirmation" != "${nodejs_confirmation#[Yy]}" ]; then
+  install_nodejs
+else
+  printf "\n"
+  center "Skipping NodeJS installing..."
   printf "\n"
 fi
