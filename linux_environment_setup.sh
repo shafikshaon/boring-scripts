@@ -81,6 +81,9 @@ read postgresql_confirmation
 echo -n 'Do you want to install NodeJS (Y/n)? '
 read nodejs_confirmation
 
+echo -n 'Do you want to install Memcached (Y/n)? '
+read memcached_confirmation
+
 # 0
 install_basic_packages() {
   sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
@@ -326,6 +329,18 @@ install_nodejs() {
   printf "\n"
 }
 
+
+# 19
+install_memcached() {
+  printf "\n"
+  center "Installing Memcached..."
+  printf "\n"
+  sudo apt install memcached libmemcached-tools
+  printf "\n"
+  center "Memcached installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -480,5 +495,13 @@ if [ "$nodejs_confirmation" != "${nodejs_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping NodeJS installing..."
+  printf "\n"
+fi
+# 19
+if [ "$memcached_confirmation" != "${memcached_confirmation#[Yy]}" ]; then
+  install_memcached
+else
+  printf "\n"
+  center "Skipping Memcached installing..."
   printf "\n"
 fi
