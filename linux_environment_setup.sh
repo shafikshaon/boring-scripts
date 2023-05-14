@@ -107,6 +107,7 @@ read google_chrome_confirmation
 # 0
 install_basic_packages() {
     sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2
+    sudo apt --fix-broken install
 }
 
 # 1
@@ -401,9 +402,8 @@ install_python() {
   wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz
   tar -xf Python-3.11.3.tgz
   cd Python-3.11.3
-  make -j 12
-  sudo make altinstall
   ./configure --enable-optimizations
+  sudo make altinstall
   printf "\n"
   center "Python installed successfully."
   printf "\n"
