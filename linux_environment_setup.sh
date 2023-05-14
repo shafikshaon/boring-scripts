@@ -305,11 +305,16 @@ install_docker() {
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   sudo apt update -y
   sudo apt install docker-ce docker-ce-cli containerd.io -y
-  sudo usermod -aG docker $USER
   sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   docker-compose --version
   sudo service docker restart
+  sudo groupadd docker
+  sudo usermod -aG docker ${USER}
+  sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+  sudo chmod g+rwx "$HOME/.docker" -R
+  sudo usermod -a -G docker ${USER}
+  printf "Now restart your machine."
   printf "\n"
   center "Docker installed successfully."
   printf "\n"
