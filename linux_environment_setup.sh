@@ -96,6 +96,9 @@ read python_confirmation
 echo -n 'Do you want to install Go (Y/n)? '
 read go_confirmation
 
+echo -n 'Do you want to install AWS CLI and AWS Local (Y/n)? '
+read aws_confirmation
+
 # 0
 install_basic_packages() {
   sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev gdebi
@@ -407,6 +410,24 @@ install_go() {
   printf "Add this 'export PATH=$PATH:/usr/local/go/bin' in path variable. ex ~/.profile"
   printf "\n"
   center "Go installed successfully."
+  printf "\n"
+}
+
+# 23
+install_aws() {
+  printf "\n"
+  center "Installing AWS CLI and AWS Local..."
+  printf "\n"
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+  sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+  which aws
+  pip install awscli
+  pip install awscli-local
+  printf "\n"
+  center "AWS CLI and AWS Local installed successfully."
   printf "\n"
 }
 
