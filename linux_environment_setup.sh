@@ -99,6 +99,9 @@ read go_confirmation
 echo -n 'Do you want to install AWS CLI and AWS Local (Y/n)? '
 read aws_confirmation
 
+echo -n 'Do you want to install Google Chrome (Y/n)? '
+read google_chrome_confirmation
+
 # 0
 install_basic_packages() {
   sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev gdebi
@@ -431,6 +434,18 @@ install_aws() {
   printf "\n"
 }
 
+# 25
+install_google_chrome() {
+  printf "\n"
+  center "Installing Google Chrome..."
+  printf "\n"
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  sudo apt install ./google-chrome-stable_current_amd64.deb
+  printf "\n"
+  center "Google Chrome installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -638,5 +653,14 @@ if [ "$aws_confirmation" != "${$aws_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping AWS CLI and AWS Local installing..."
+  printf "\n"
+fi
+
+# 25
+if [ "$google_chrome_confirmation" != "${$google_chrome_confirmation#[Yy]}" ]; then
+  install_google_chrome
+else
+  printf "\n"
+  center "Skipping Google Chrome installing..."
   printf "\n"
 fi
