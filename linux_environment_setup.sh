@@ -413,7 +413,7 @@ install_go() {
   printf "\n"
 }
 
-# 23
+# 24
 install_aws() {
   printf "\n"
   center "Installing AWS CLI and AWS Local..."
@@ -629,5 +629,14 @@ if [ "$go_confirmation" != "${$go_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping Go installing..."
+  printf "\n"
+fi
+
+# 24
+if [ "$aws_confirmation" != "${$aws_confirmation#[Yy]}" ]; then
+  install_aws
+else
+  printf "\n"
+  center "Skipping AWS CLI and AWS Local installing..."
   printf "\n"
 fi
