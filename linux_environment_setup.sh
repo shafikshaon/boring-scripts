@@ -5,7 +5,8 @@ center() {
   echo "$1" | sed -e :a -e "s/^.\{1,$(tput cols)\}$/ & /;ta" | tr -d '\n' | head -c $(tput cols)
   printf '=%.0s' $(seq 1 $(tput cols)) | sed 's/^ //'
 }
-sudo /opt/McAfee/ens/tp/init/mfetpd-control.sh stop && sudo /opt/McAfee/ens/esp/init/mfeespd-control.sh stop
+
+#sudo /opt/McAfee/ens/tp/init/mfetpd-control.sh stop && sudo /opt/McAfee/ens/esp/init/mfeespd-control.sh stop
 
 printf "\n"
 center "Updating system"
@@ -152,7 +153,7 @@ install_skype() {
   printf "\n"
   wget https://go.skype.com/skypeforlinux-64.deb
   sudo chown _apt skypeforlinux-64.deb
-  sudo apt install ./skypeforlinux-64.deb
+  sudo dpkg -i ./skypeforlinux-64.deb
   sudo rm -rf skypeforlinux-64.deb
   printf "\n"
   center "Skype installed successfully."
@@ -162,7 +163,7 @@ install_skype() {
 # 5
 install_ssh() {
   printf "\n"
-  center "Seeting up SSH Keys..."
+  center "Setting up SSH Keys..."
   printf "\n"
   ssh-keygen -t ed25519 -C $email
   eval "$(ssh-agent -s)"
@@ -194,7 +195,7 @@ install_slack() {
   wget https://downloads.slack-edge.com/releases/linux/4.29.149/prod/x64/slack-desktop-4.29.149-amd64.deb
   mv slack-desktop-4.29.149-amd64.deb slack_desktop.deb
   sudo chown _apt slack_desktop.deb
-  sudo apt install ./slack_desktop.deb
+  sudo dpkg -i ./slack_desktop.deb
   sudo rm -rf slack_desktop.deb
   printf "\n"
   center "Slack installed successfully."
@@ -306,7 +307,7 @@ install_zoom() {
   printf "\n"
   wget https://zoom.us/client/latest/zoom_amd64.deb
   sudo chown _apt zoom_amd64.deb
-  sudo apt install ./zoom_amd64.deb
+  sudo dpkg -i ./zoom_amd64.deb
   sudo rm -rf zoom_amd64.deb
   printf "\n"
   center "Zoom installed successfully."
@@ -384,7 +385,7 @@ install_teamviewer() {
   center "Installing TeamViewer..."
   printf "\n"
   wget https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
-  sudo apt install ./teamviewer_amd64.deb
+  sudo dpkg -i ./teamviewer_amd64.deb
   printf "\n"
   center "TeamViewer installed successfully."
   printf "\n"
@@ -444,7 +445,7 @@ install_google_chrome() {
   center "Installing Google Chrome..."
   printf "\n"
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  sudo apt install ./google-chrome-stable_current_amd64.deb
+  sudo dpkg -i ./google-chrome-stable_current_amd64.deb
   printf "\n"
   center "Google Chrome installed successfully."
   printf "\n"
