@@ -96,7 +96,7 @@ echo -n 'Do you want to install Python 3.10 (Y/n)? '
 read python_confirmation
 
 echo -n 'Do you want to install Go (Y/n)? '
-read go_confirmation
+read golang_confirmation
 
 echo -n 'Do you want to install AWS CLI and AWS Local (Y/n)? '
 read aws_confirmation
@@ -410,7 +410,7 @@ install_python() {
 }
 
 # 23
-install_go() {
+install_golang() {
   printf "\n"
   center "Installing Go..."
   printf "\n"
@@ -644,8 +644,8 @@ else
 fi
 
 # 23
-if [ "$go_confirmation" != "${go_confirmation#[Yy]}" ]; then
-  install_go
+if [ "$golang_confirmation" != "${golang_confirmation#[Yy]}" ]; then
+  install_golang
 else
   printf "\n"
   center "Skipping Go installing..."
