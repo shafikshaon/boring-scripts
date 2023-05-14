@@ -14,7 +14,7 @@ printf "\n"
 sudo apt-get update -y
 
 printf "\n"
-center "System updated and upgraded"
+center "System updated"
 printf "\n"
 
 printf "\n"
@@ -101,6 +101,9 @@ read google_chrome_confirmation
 
 echo -n 'Do you want to install CopyQ (Y/n)? '
 read copyq_confirmation
+
+echo -n 'Do you want to install Oh My ZSH (Y/n)? '
+read omz_confirmation
 
 # 0
 install_basic_packages() {
@@ -463,6 +466,17 @@ install_copyq() {
   printf "\n"
 }
 
+# 27
+install_omz() {
+  printf "\n"
+  center "Installing Oh My ZSH..."
+  printf "\n"
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  printf "\n"
+  center "Oh My ZSH installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -688,6 +702,15 @@ if [ "$copyq_confirmation" != "${copyq_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping CopyQ installing..."
+  printf "\n"
+fi
+
+# 27
+if [ "$omz_confirmation" != "${omz_confirmation#[Yy]}" ]; then
+  install_omz
+else
+  printf "\n"
+  center "Skipping Oh My ZSH installing..."
   printf "\n"
 fi
 
