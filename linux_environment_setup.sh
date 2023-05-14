@@ -104,6 +104,9 @@ read aws_confirmation
 echo -n 'Do you want to install Google Chrome (Y/n)? '
 read google_chrome_confirmation
 
+echo -n 'Do you want to install CopyQ (Y/n)? '
+read copyq_confirmation
+
 # 0
 install_basic_packages() {
     sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2
@@ -451,6 +454,19 @@ install_google_chrome() {
   printf "\n"
 }
 
+# 26
+install_copyq() {
+  printf "\n"
+  center "Installing CopyQ..."
+  printf "\n"
+  sudo add-apt-repository ppa:hluk/copyq
+  sudo apt update
+  sudo apt install copyq
+  printf "\n"
+  center "CopyQ installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -667,6 +683,15 @@ if [ "$google_chrome_confirmation" != "${google_chrome_confirmation#[Yy]}" ]; th
 else
   printf "\n"
   center "Skipping Google Chrome installing..."
+  printf "\n"
+fi
+
+# 26
+if [ "$copyq_confirmation" != "${copyq_confirmation#[Yy]}" ]; then
+  install_copyq
+else
+  printf "\n"
+  center "Skipping CopyQ installing..."
   printf "\n"
 fi
 
