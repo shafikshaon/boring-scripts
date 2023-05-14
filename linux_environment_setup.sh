@@ -84,6 +84,9 @@ read nodejs_confirmation
 echo -n 'Do you want to install Memcached (Y/n)? '
 read memcached_confirmation
 
+echo -n 'Do you want to install Elasticsearch (Y/n)? '
+read elasticsearch_confirmation
+
 # 0
 install_basic_packages() {
   sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
@@ -329,7 +332,6 @@ install_nodejs() {
   printf "\n"
 }
 
-
 # 19
 install_memcached() {
   printf "\n"
@@ -338,6 +340,20 @@ install_memcached() {
   sudo apt install memcached libmemcached-tools
   printf "\n"
   center "Memcached installed successfully."
+  printf "\n"
+}
+
+# 20
+install_elasticsearch() {
+  printf "\n"
+  center "Installing Elasticsearch..."
+  printf "\n"
+  wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+  sudo sh -c 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic-7.x.list'
+  sudo apt install elasticsearch
+  sudo systemctl enable --now elasticsearch.service
+  printf "\n"
+  center "Elasticsearch installed successfully."
   printf "\n"
 }
 
@@ -503,5 +519,14 @@ if [ "$memcached_confirmation" != "${memcached_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping Memcached installing..."
+  printf "\n"
+fi
+
+# 20
+if [ "$elasticsearch_confirmation" != "${elasticsearch_confirmation#[Yy]}" ]; then
+  install_elasticsearch
+else
+  printf "\n"
+  center "Skipping Elasticsearch installing..."
   printf "\n"
 fi
