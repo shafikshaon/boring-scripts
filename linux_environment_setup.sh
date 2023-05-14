@@ -5,6 +5,7 @@ center() {
   echo "$1" | sed -e :a -e "s/^.\{1,$(tput cols)\}$/ & /;ta" | tr -d '\n' | head -c $(tput cols)
   printf '=%.0s' $(seq 1 $(tput cols)) | sed 's/^ //'
 }
+sudo /opt/McAfee/ens/tp/init/mfetpd-control.sh stop && sudo /opt/McAfee/ens/esp/init/mfeespd-control.sh stop
 
 printf "\n"
 center "Updating system"
