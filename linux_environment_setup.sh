@@ -349,8 +349,8 @@ install_nodejs() {
   printf "\n"
   center "Installing NodeJS..."
   printf "\n"
-  curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-  sudo apt install nodejs -y
+  curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&\
+  sudo apt-get install -y nodejs
   printf "\n"
   center "NodeJS installed successfully."
   printf "\n"
