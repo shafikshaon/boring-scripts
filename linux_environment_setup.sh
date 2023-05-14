@@ -308,6 +308,8 @@ install_zoom() {
   wget https://zoom.us/client/latest/zoom_amd64.deb
   sudo chown _apt zoom_amd64.deb
   sudo dpkg -i ./zoom_amd64.deb
+  sudo apt --fix-broken install
+  sudo dpkg -i ./zoom_amd64.deb
   sudo rm -rf zoom_amd64.deb
   printf "\n"
   center "Zoom installed successfully."
@@ -402,8 +404,6 @@ install_python() {
   make -j 12
   sudo make altinstall
   ./configure --enable-optimizations
-  cd ..
-  sudo rm -rf Python-3.11.3
   printf "\n"
   center "Python installed successfully."
   printf "\n"
