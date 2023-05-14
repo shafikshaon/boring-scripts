@@ -105,6 +105,18 @@ read copyq_confirmation
 echo -n 'Do you want to install Oh My ZSH (Y/n)? '
 read omz_confirmation
 
+echo -n 'Do you want to install Kubectl (Y/n)? '
+read kubectl_confirmation
+
+echo -n 'Do you want to install Minikube (Y/n)? '
+read minikube_confirmation
+
+echo -n 'Do you want to install Skaffold (Y/n)? '
+read skaffold_confirmation
+
+echo -n 'Do you want to install Terraform (Y/n)? '
+read terraform_confirmation
+
 # 0
 install_basic_packages() {
     sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2
@@ -478,6 +490,59 @@ install_omz() {
   printf "\n"
 }
 
+# 28
+install_kubectl() {
+  printf "\n"
+  center "Installing Kubectl..."
+  printf "\n"
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+  echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+  kubectl version --client
+  printf "\n"
+  center "Kubectl installed successfully."
+  printf "\n"
+}
+
+# 29
+install_minikube() {
+  printf "\n"
+  center "Installing Minikube..."
+  printf "\n"
+  curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+  sudo dpkg -i minikube_latest_amd64.deb
+  minikube addons enable ingress
+  minikube addons enable metrics-server
+  printf "\n"
+  center "Minikube installed successfully."
+  printf "\n"
+}
+
+# 30
+install_skaffold() {
+  printf "\n"
+  center "Installing Skaffold..."
+  printf "\n"
+  curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && sudo install skaffold /usr/local/bin/
+  printf "\n"
+  center "Skaffold installed successfully."
+  printf "\n"
+}
+
+# 31
+install_terraform() {
+  printf "\n"
+  center "Installing Terraform..."
+  printf "\n"
+  wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  sudo apt update && sudo apt install terraform -y
+  printf "\n"
+  center "Terraform installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -715,38 +780,45 @@ else
   printf "\n"
 fi
 
+# 28
+if [ "$kubectl_confirmation" != "${kubectl_confirmation#[Yy]}" ]; then
+  install_kubectl
+else
+  printf "\n"
+  center "Skipping Kubectl installing..."
+  printf "\n"
+fi
+
+# 29
+if [ "$minikube_confirmation" != "${minikube_confirmation#[Yy]}" ]; then
+  install_minikube
+else
+  printf "\n"
+  center "Skipping Minikube installing..."
+  printf "\n"
+fi
+
+# 30
+if [ "$skaffold_confirmation" != "${skaffold_confirmation#[Yy]}" ]; then
+  install_skaffold
+else
+  printf "\n"
+  center "Skipping Skaffold installing..."
+  printf "\n"
+fi
+
+# 31
+if [ "$terraform_confirmation" != "${terraform_confirmation#[Yy]}" ]; then
+  install_terraform
+else
+  printf "\n"
+  center "Skipping Terraform installing..."
+  printf "\n"
+fi
+
 sudo apt update
 sudo apt install --fix-missing -y
 sudo apt install -f
 sudo apt autoremove -y
 sudo apt autoclean
 sudo apt clean
-
-
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-kubectl version --client
-
-
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-sudo dpkg -i minikube_latest_amd64.deb
-minikube addons enable ingress
-minikube addons enable metrics-server
-
-curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && sudo install skaffold /usr/local/bin/
-
-wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt update && sudo apt install terraform
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt install docker-ce docker-ce-cli containerd.io
-
-sudo groupadd docker
-sudo usermod -aG docker ${USER}
-sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
-sudo chmod g+rwx "$HOME/.docker" -R
-sudo usermod -a -G docker rahman_admin
