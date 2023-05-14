@@ -90,9 +90,12 @@ read elasticsearch_confirmation
 echo -n 'Do you want to install TeamViewer (Y/n)? '
 read teamviewer_confirmation
 
+echo -n 'Do you want to install Python (Y/n)? '
+read python_confirmation
+
 # 0
 install_basic_packages() {
-  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+  sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 }
 
 # 1
@@ -276,6 +279,10 @@ install_docker() {
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   sudo apt update
   sudo apt install docker-ce docker-ce-cli containerd.io -y
+  sudo usermod -aG docker $USER
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  docker-compose --version
   printf "\n"
   center "Docker installed successfully."
   printf "\n"
@@ -369,6 +376,22 @@ install_teamviewer() {
   sudo apt install ./teamviewer_amd64.deb
   printf "\n"
   center "TeamViewer installed successfully."
+  printf "\n"
+}
+
+# 22
+install_python() {
+  printf "\n"
+  center "Installing Python..."
+  printf "\n"
+  wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz
+  tar -xf Python-3.11.3.tgz
+  cd Python-3.11.3
+  make -j 12
+  sudo make altinstall
+  ./configure --enable-optimizations
+  printf "\n"
+  center "Python installed successfully."
   printf "\n"
 }
 
@@ -552,5 +575,14 @@ if [ "$teamviewer_confirmation" != "${teamviewer_confirmation#[Yy]}" ]; then
 else
   printf "\n"
   center "Skipping TeamViewer installing..."
+  printf "\n"
+fi
+
+# 22
+if [ "$python_confirmation" != "${python_confirmation#[Yy]}" ]; then
+  install_python
+else
+  printf "\n"
+  center "Skipping Python installing..."
   printf "\n"
 fi
