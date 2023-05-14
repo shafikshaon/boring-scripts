@@ -292,6 +292,7 @@ install_docker() {
   sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   docker-compose --version
+  sudo service docker restart
   printf "\n"
   center "Docker installed successfully."
   printf "\n"
@@ -399,6 +400,8 @@ install_python() {
   make -j 12
   sudo make altinstall
   ./configure --enable-optimizations
+  cd ..
+  sudo rm -rf Python-3.11.3
   printf "\n"
   center "Python installed successfully."
   printf "\n"
@@ -664,3 +667,10 @@ else
   center "Skipping Google Chrome installing..."
   printf "\n"
 fi
+
+sudo apt update
+sudo apt install --fix-missing -y
+sudo apt install -f
+sudo apt autoremove -y
+sudo apt autoclean
+sudo apt clean
