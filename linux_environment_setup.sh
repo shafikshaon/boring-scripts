@@ -87,6 +87,9 @@ read memcached_confirmation
 echo -n 'Do you want to install Elasticsearch (Y/n)? '
 read elasticsearch_confirmation
 
+echo -n 'Do you want to install TeamViewer (Y/n)? '
+read teamviewer_confirmation
+
 # 0
 install_basic_packages() {
   sudo apt install -y build-essential checkinstall gcc g++ make python3-distutils tree curl htop bash-completion libpq-dev gdal-bin python3-venv software-properties-common apt-transport-https wget build-essential libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev asciidoc xmlto docbook2x libfuse2 zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
@@ -357,6 +360,18 @@ install_elasticsearch() {
   printf "\n"
 }
 
+# 21
+install_teamviewer() {
+  printf "\n"
+  center "Installing TeamViewer..."
+  printf "\n"
+  wget https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
+  sudo apt install ./teamviewer_amd64.deb
+  printf "\n"
+  center "TeamViewer installed successfully."
+  printf "\n"
+}
+
 # 0
 if [ "$basic_packages_confirmation" != "${basic_packages_confirmation#[Yy]}" ]; then
   install_basic_packages
@@ -528,5 +543,14 @@ if [ "$elasticsearch_confirmation" != "${elasticsearch_confirmation#[Yy]}" ]; th
 else
   printf "\n"
   center "Skipping Elasticsearch installing..."
+  printf "\n"
+fi
+
+# 21
+if [ "$teamviewer_confirmation" != "${teamviewer_confirmation#[Yy]}" ]; then
+  install_teamviewer
+else
+  printf "\n"
+  center "Skipping TeamViewer installing..."
   printf "\n"
 fi
