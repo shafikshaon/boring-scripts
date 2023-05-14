@@ -92,7 +92,7 @@ read elasticsearch_confirmation
 echo -n 'Do you want to install TeamViewer (Y/n)? '
 read teamviewer_confirmation
 
-echo -n 'Do you want to install Python (Y/n)? '
+echo -n 'Do you want to install Python 3.10 (Y/n)? '
 read python_confirmation
 
 echo -n 'Do you want to install Go (Y/n)? '
@@ -399,9 +399,9 @@ install_python() {
   printf "\n"
   center "Installing Python..."
   printf "\n"
-  wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz
-  tar -xf Python-3.11.3.tgz
-  cd Python-3.11.3
+  wget https://www.python.org/ftp/python/3.10.11/Python-3.10.11.tgz
+  tar -xf Python-3.10.11.tgz
+  cd Python-3.10.11
   ./configure --enable-optimizations
   sudo make altinstall
   printf "\n"
@@ -644,7 +644,7 @@ else
 fi
 
 # 23
-if [ "$go_confirmation" != "${$go_confirmation#[Yy]}" ]; then
+if [ "$go_confirmation" != "${go_confirmation#[Yy]}" ]; then
   install_go
 else
   printf "\n"
