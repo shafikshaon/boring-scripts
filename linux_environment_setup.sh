@@ -433,8 +433,9 @@ install_golang() {
   printf "\n"
   center "Installing Go..."
   printf "\n"
-  wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
-  printf "Add this 'export PATH=$PATH:/usr/local/go/bin' in path variable. ex ~/.profile"
+  wget -c https://dl.google.com/go/go1.20.4.linux-amd64.tar.gz
+  sudo tar -xz -C /usr/local -f go1.20.4.linux-amd64.tar.gz
+  export PATH=$PATH:/usr/local/go/bin
   printf "\n"
   center "Go installed successfully."
   printf "\n"
