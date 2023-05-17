@@ -490,6 +490,7 @@ install_omz() {
   printf "\n"
   sudo apt install zsh -y
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  chsh -s $(which zsh)
   printf "\n"
   center "Oh My ZSH installed successfully."
   printf "\n"
