@@ -66,8 +66,8 @@ read rabbitmq_confirmation
 echo -n 'Do you want to install Docker (Y/n)? '
 read docker_confirmation
 
-echo -n 'Do you want to install Zoom (Y/n)? '
-read zoom_confirmation
+# echo -n 'Do you want to install Zoom (Y/n)? '
+# read zoom_confirmation
 
 echo -n 'Do you want to install Jetbrains Toolbox (Y/n)? '
 read jetbrains_confirmation
