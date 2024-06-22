@@ -43,7 +43,7 @@ run_script_with_confirmation() {
 chrome_url="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
 stats_url="https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
 google_drive_url="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
-jetbrains_url="https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.28.1.15219.dmg"
+jetbrains_url="https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-2.3.2.31487-arm64.dmg"
 whatsapp_url="https://web.whatsapp.com/desktop/mac/files/WhatsApp.dmg"
 telegram_url="https://telegram.org/dl/desktop/mac"
 signal_url="https://updates.signal.org/desktop/signal-desktop-mac-universal-7.13.0.dmg"
