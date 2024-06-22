@@ -7,5 +7,6 @@
 3. [PostgreSQL Database Restore](/postgres_database_restore.sh)
 4. [Get Public IP Address](/get_public_ip.sh)
 5. [Pomodoro Timer](/pomodoro.sh)
+6. [Mac Apps for Apple Silicon](/download_apple_silicon_mac_apps.sh)
 
 many more...
