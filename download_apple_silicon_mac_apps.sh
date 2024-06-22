@@ -91,3 +91,91 @@ run_script_with_confirmation "$ohmyzsh_url"
 
 echo "All downloads completed."
 
+
+
+echo
+echo
+echo
+
+
+#!/bin/bash
+
+# Function to generate an ed25519 SSH key
+generate_ssh_key() {
+    local email=$1
+    local key_path="$HOME/.ssh/id_ed25519_github"
+
+    # Check if the key already exists
+    if [[ -f "$key_path" ]]; then
+        echo
+        echo "An SSH key already exists at $key_path."
+        read -p "Do you want to overwrite it? (y/n): " overwrite
+        if [[ $overwrite != "y" ]]; then
+            echo "Aborting the SSH key generation."
+            return
+        fi
+        # Backup existing key
+        mv "$key_path" "$key_path.backup.$(date +%s)"
+        echo "Existing key backed up to $key_path.backup."
+    fi
+
+    echo
+    echo "Generating a new ed25519 SSH key for GitHub..."
+    ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""
+
+    if [[ $? -ne 0 ]]; then
+        echo "Failed to generate SSH key."
+        exit 1
+    fi
+
+    echo
+    echo "SSH key generated successfully."
+}
+
+# Function to display the SSH public key
+display_public_key() {
+    local key_path="$HOME/.ssh/id_ed25519_github.pub"
+    echo
+    echo "Your new SSH public key is:"
+    echo
+    echo "####################################################################################################################"
+    cat "$key_path"
+    echo "####################################################################################################################"
+    echo
+    echo "Copy the above key and add it to your GitHub account under SSH and GPG keys."
+}
+
+# Function to add the SSH key to the SSH agent
+add_key_to_ssh_agent() {
+    local key_path="$HOME/.ssh/id_ed25519_github"
+
+    echo
+    echo "Adding your SSH private key to the SSH agent..."
+    eval "$(ssh-agent -s)"
+    ssh-add "$key_path"
+
+    if [[ $? -ne 0 ]]; then
+        echo "Failed to add SSH key to the SSH agent."
+        exit 1
+    fi
+
+    echo "SSH key added to the SSH agent successfully."
+}
+
+# Prompt the user for their email
+echo
+read -p "Enter your GitHub email address: " github_email
+
+# Generate the SSH key
+generate_ssh_key "$github_email"
+
+# Display the public key
+display_public_key
+
+# Add the SSH key to the SSH agent
+add_key_to_ssh_agent
+
+echo
+echo "All done! You can now use this SSH key with GitHub."
+
+
