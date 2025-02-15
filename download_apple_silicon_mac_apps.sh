@@ -2,7 +2,7 @@
 
 ################################################################################
 # macOS Development Environment Setup Script
-# Author: You
+# Author: Shafikur Rahman
 # Description: Automated setup script for macOS development environment
 ################################################################################
 
