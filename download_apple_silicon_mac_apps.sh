@@ -1,175 +1,382 @@
 #!/bin/bash
 
-# Function to download a file with user confirmation
-download_with_confirmation() {
-    local url=$1
-    local filename=$2
+################################################################################
+# macOS Development Environment Setup Script
+# Author: You
+# Description: Automated setup script for macOS development environment
+################################################################################
 
-    read -p "Do you want to download $filename from $url? (y/n): " confirmation
-    if [[ $confirmation == "y" ]]; then
-        echo "Downloading $filename..."
-        curl -L -# -o "$filename" "$url"
-        echo "$filename downloaded successfully."
-	echo
-	echo
-    else
-        echo "Skipping $filename."
-	echo
-	echo
-    fi
+# Strict error handling
+set -euo pipefail
+
+# Color definitions
+readonly RESET='\033[0m'
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+
+# Global variables
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly LOG_FILE="/tmp/macos_setup_$(date +%Y%m%d_%H%M%S).log"
+ERRORS=()
+
+# Logging functions
+log() {
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo -e "${timestamp} - $1" | tee -a "$LOG_FILE"
 }
 
-
-# Function to run a script directly from a URL with user confirmation
-run_script_with_confirmation() {
-    local url=$1
-
-    read -p "Do you want to run the script from $url? (y/n): " confirmation
-    if [[ $confirmation == "y" ]]; then
-        echo "Running the script from $url..."
-        /bin/bash -c "$(curl -fsSL $url)"
-        echo "Script executed successfully."
-	echo
-	echo
-    else
-        echo "Skipping the script from $url."
-	echo
-	echo
-    fi
+log_success() {
+    log "${GREEN}✓${RESET} $1"
 }
 
+log_info() {
+    log "${BLUE}ℹ${RESET} $1"
+}
 
-# URLs for each application
-chrome_url="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
-stats_url="https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
-google_drive_url="https://dl.google.com/drive-file-stream/GoogleDrive.dmg"
-jetbrains_url="https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-2.4.1.32573-arm64.dmg"
-whatsapp_url="https://web.whatsapp.com/desktop/mac/files/WhatsApp.dmg"
-telegram_url="https://telegram.org/dl/desktop/mac"
-signal_url="https://updates.signal.org/desktop/signal-desktop-mac-universal-7.18.0.dmg"
-skype_url="https://go.skype.com/mac.download"
-wps_url="https://wdl1.pcfg.cache.wpscdn.com/wpsdl/macwpsoffice/download/installer/WPS_Office_Installer_0024.21300041.zip"
-notion_url="https://www.notion.so/desktop/mac/download"
-vlc_url="https://mirror.downloadvn.com/videolan/vlc/3.0.21/macosx/vlc-3.0.21-arm64.dmg"
-zoom_url="https://zoom.us/client/latest/Zoom.pkg"
-postgresql_url="https://get.enterprisedb.com/postgresql/postgresql-16.3-1-osx.dmg"
-ohmyzsh_url="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
-anaconda_url="https://repo.anaconda.com/archive/Anaconda3-2024.06-1-MacOSX-arm64.pkg"
-iterm2_url="https://iterm2.com/downloads/stable/iTerm2-3_5_3.zip"
-chrome_canary_url="https://dl.google.com/chrome/mac/universal/canary/googlechromecanary.dmg"
-anydesk_url="https://download.anydesk.com/anydesk.dmg"
-segate_url="https://www.seagate.com/content/dam/seagate/migrated-assets/www-content/support-content/software/toolkit/_Shared/master/SeagateToolkit.zip"
+log_warning() {
+    log "${YELLOW}⚠${RESET} $1"
+}
 
-# Downloading each application with user confirmation
-download_with_confirmation "$stats_url" "Stats.dmg"
-download_with_confirmation "$chrome_url" "GoogleChrome.dmg"
-download_with_confirmation "$google_drive_url" "GoogleDrive.dmg"
-download_with_confirmation "$jetbrains_url" "JetBrainsToolbox.dmg"
-download_with_confirmation "$whatsapp_url" "WhatsApp.dmg"
-download_with_confirmation "$telegram_url" "Telegram.dmg"
-download_with_confirmation "$signal_url" "Signal.dmg"
-download_with_confirmation "$skype_url" "Skype.dmg"
-download_with_confirmation "$wps_url" "WPS_Office_Installer_0024.21300041.zip"
-download_with_confirmation "$notion_url" "Notion.dmg"
-download_with_confirmation "$vlc_url" "VLC.dmg"
-download_with_confirmation "$zoom_url" "Zoom.pkg"
-download_with_confirmation "$postgresql_url" "PostgreSQL.dmg"
-download_with_confirmation "$anaconda_url" "Anaconda.pkg"
-download_with_confirmation "$iterm2_url" "iTerm2.zip"
-download_with_confirmation "$chrome_canary_url" "ChromeCanary.dmg"
-download_with_confirmation "$anydesk_url" "AnyDesk.dmg"
-download_with_confirmation "$segate_url" "SeagateToolkit.zip"
+log_error() {
+    log "${RED}✖${RESET} $1"
+    ERRORS+=("$1")
+}
 
-# Running the script with user confirmation
-run_script_with_confirmation "$ohmyzsh_url"
+# Helper functions
+check_prerequisites() {
+    log_info "Checking system prerequisites..."
+    
+    # Check if running on macOS
+    if [[ "$(uname)" != "Darwin" ]]; then
+        log_error "This script is intended for macOS only. Current OS: $(uname)"
+        exit 1
+    fi
 
-echo "All downloads completed."
+    # Check macOS version
+    local macos_version=$(sw_vers -productVersion)
+    if [[ "${macos_version%%.*}" -lt "11" ]]; then
+        log_error "This script requires macOS Big Sur (11.0) or later. Current version: $macos_version"
+        exit 1
+    fi
+    log_success "macOS version $macos_version detected"
 
-
-
-echo
-echo
-echo
-
-
-#!/bin/bash
-
-# Function to generate an ed25519 SSH key
-generate_ssh_key() {
-    local email=$1
-    local key_path="$HOME/.ssh/id_ed25519_github"
-
-    # Check if the key already exists
-    if [[ -f "$key_path" ]]; then
-        echo
-        echo "An SSH key already exists at $key_path."
-        read -p "Do you want to overwrite it? (y/n): " overwrite
-        if [[ $overwrite != "y" ]]; then
-            echo "Aborting the SSH key generation."
-            return
+    # Check if running with sudo
+    if [[ $EUID -eq 0 ]]; then
+        log_error "This script should not be run with sudo. Please run as a normal user"
+        exit 1
+    fi
+    
+    # Check for Apple Silicon or Intel
+    local cpu_type=$(uname -m)
+    if [[ "$cpu_type" == "arm64" ]]; then
+        log_success "Apple Silicon (M1/M2) detected"
+        # Ensure Rosetta 2 is installed for Apple Silicon
+        if ! pkgutil --pkg-info=com.apple.pkg.RosettaUpdateAuto >/dev/null 2>&1; then
+            log_info "Installing Rosetta 2..."
+            sudo softwareupdate --install-rosetta --agree-to-license
+            log_success "Rosetta 2 installed"
         fi
-        # Backup existing key
-        mv "$key_path" "$key_path.backup.$(date +%s)"
-        echo "Existing key backed up to $key_path.backup."
+    else
+        log_success "Intel processor detected"
     fi
 
-    echo
-    echo "Generating a new ed25519 SSH key for GitHub..."
-    ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""
-
-    if [[ $? -ne 0 ]]; then
-        echo "Failed to generate SSH key."
+    # Check internet connectivity
+    if ! ping -c 1 google.com >/dev/null 2>&1; then
+        log_error "No internet connection detected. This script requires internet access"
         exit 1
     fi
+    log_success "Internet connectivity confirmed"
 
-    echo
-    echo "SSH key generated successfully."
+    # Check available disk space (minimum 20GB)
+    local available_space=$(df -H / | awk 'NR==2 {print $4}' | sed 's/G//')
+    if [ "${available_space%.*}" -lt 20 ]; then
+        log_error "Insufficient disk space. At least 20GB required, only ${available_space}GB available"
+        exit 1
+    fi
+    log_success "Sufficient disk space available: ${available_space}GB"
 }
 
-# Function to display the SSH public key
-display_public_key() {
-    local key_path="$HOME/.ssh/id_ed25519_github.pub"
-    echo
-    echo "Your new SSH public key is:"
-    echo
-    echo "####################################################################################################################"
-    cat "$key_path"
-    echo "####################################################################################################################"
-    echo
-    echo "Copy the above key and add it to your GitHub account under SSH and GPG keys."
+setup_sudo_access() {
+    log_info "Setting up sudo access..."
+    sudo -v
+    while true; do
+        sudo -n true
+        sleep 60
+        kill -0 "$$" || exit
+    done 2>/dev/null &
 }
 
-# Function to add the SSH key to the SSH agent
-add_key_to_ssh_agent() {
+install_xcode_tools() {
+    if ! xcode-select -p &>/dev/null; then
+        log_info "Installing Xcode Command Line Tools..."
+        xcode-select --install
+        until xcode-select -p &>/dev/null; do
+            sleep 5
+        done
+        log_success "Xcode Command Line Tools installed"
+    else
+        log_info "Xcode Command Line Tools already installed"
+    fi
+}
+
+install_homebrew() {
+    if ! command -v brew &>/dev/null; then
+        log_info "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        log_success "Homebrew installed"
+    else
+        log_info "Updating Homebrew..."
+        brew update
+    fi
+}
+
+install_oh_my_zsh() {
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        log_info "Installing Oh My Zsh..."
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        log_success "Oh My Zsh installed"
+    else
+        log_info "Oh My Zsh already installed"
+    fi
+}
+
+# Package arrays
+readonly BREW_PACKAGES=(
+    git
+    tree
+    wget
+    jq
+    ripgrep
+    fd
+    bat
+    tldr
+    python
+    pyenv
+    awscli
+    azure-cli
+    pnpm
+    go
+    rustup
+    htop
+    neofetch
+    kubernetes-cli
+    helm
+    postgresql@17
+)
+
+readonly BREW_CASKS=(
+    iterm2
+    visual-studio-code
+    docker
+    dbeaver-community
+    tableplus
+    notion
+    slack
+    google-chrome
+    firefox
+    postman
+    insomnia
+    figma
+    sublime-text
+    zoom
+    pgadmin4
+    stats
+    vlc
+    signal
+    claude
+    maccy
+    anaconda
+    mysqlworkbench
+    telegram-desktop
+    google-chrome@canary
+)
+
+install_packages() {
+    log_info "Installing Homebrew packages..."
+    for package in "${BREW_PACKAGES[@]}"; do
+        if brew list "$package" &>/dev/null; then
+            log_info "$package already installed"
+        else
+            log_info "Installing $package..."
+            brew install "$package" || log_error "Failed to install $package"
+        fi
+    done
+}
+
+install_casks() {
+    log_info "Installing Homebrew casks..."
+    for cask in "${BREW_CASKS[@]}"; do
+        if brew list --cask "$cask" &>/dev/null; then
+            log_info "$cask already installed"
+        else
+            log_info "Installing $cask..."
+            brew install --cask "$cask" || log_error "Failed to install $cask"
+        fi
+    done
+}
+
+setup_databases() {
+    # PostgreSQL
+    log_info "Setting up PostgreSQL..."
+    if ! brew list postgresql@17 &>/dev/null; then
+        brew install postgresql@17
+        brew services start postgresql@17
+        log_success "PostgreSQL installed and started"
+    fi
+
+    # MongoDB
+    log_info "Setting up MongoDB..."
+    if ! brew list mongodb-community &>/dev/null; then
+        brew tap mongodb/brew
+        brew install mongodb-community
+        brew services start mongodb-community
+        log_success "MongoDB installed and started"
+    fi
+}
+
+setup_node() {
+    log_info "Setting up Node.js environment..."
+    if [ ! -d "$HOME/.nvm" ]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+        
+        # Configure NVM
+        {
+            echo 'export NVM_DIR="$HOME/.nvm"'
+            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+            echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'
+        } >> ~/.zshrc
+        
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        
+        # Install LTS version
+        nvm install --lts
+        nvm use --lts
+        log_success "Node.js environment configured"
+    fi
+}
+
+setup_python() {
+    log_info "Setting up Python environment..."
+    if command -v pyenv &>/dev/null; then
+        if ! grep -q 'pyenv init' ~/.zshrc; then
+            {
+                echo 'export PYENV_ROOT="$HOME/.pyenv"'
+                echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"'
+                echo 'eval "$(pyenv init -)"'
+            } >> ~/.zshrc
+        fi
+        
+        pyenv install 3.13.2 -s
+        pyenv global 3.13.2
+        log_success "Python environment configured"
+    fi
+}
+
+setup_git() {
+    log_info "Setting up Git configuration..."
+    
+    # Prompt for Git configuration if not set
+    if [ -z "$(git config --global user.name)" ]; then
+        read -p "Enter your Git name: " git_name
+        git config --global user.name "$git_name"
+    fi
+
+    if [ -z "$(git config --global user.email)" ]; then
+        read -p "Enter your Git email: " git_email
+        git config --global user.email "$git_email"
+    fi
+
+    # Set up SSH key for GitHub
+    setup_github_ssh
+}
+
+setup_github_ssh() {
     local key_path="$HOME/.ssh/id_ed25519_github"
-
-    echo
-    echo "Adding your SSH private key to the SSH agent..."
-    eval "$(ssh-agent -s)"
-    ssh-add "$key_path"
-
-    if [[ $? -ne 0 ]]; then
-        echo "Failed to add SSH key to the SSH agent."
-        exit 1
+    
+    if [[ ! -f "$key_path" ]]; then
+        log_info "Setting up GitHub SSH key..."
+        read -p "Enter your GitHub email: " github_email
+        
+        ssh-keygen -t ed25519 -C "$github_email" -f "$key_path" -N ""
+        eval "$(ssh-agent -s)"
+        ssh-add "$key_path"
+        
+        log_success "SSH key generated at $key_path"
+        echo "Your public SSH key (add this to GitHub):"
+        cat "${key_path}.pub"
+    else
+        log_info "GitHub SSH key already exists at $key_path"
     fi
-
-    echo "SSH key added to the SSH agent successfully."
 }
 
-# Prompt the user for their email
-echo
-read -p "Enter your GitHub email address: " github_email
+setup_development_directory() {
+    log_info "Setting up development directory..."
+    mkdir -p ~/Development/{personal,work,experiments}
+    log_success "Development directories created"
+}
 
-# Generate the SSH key
-generate_ssh_key "$github_email"
+setup_shell_customization() {
+    log_info "Setting up shell customization..."
+    
+    # Install Powerlevel10k theme for Oh My Zsh
+    if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+        sed -i '' 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
+    fi
+    
+    # Add useful aliases
+    {
+        echo "# Custom aliases"
+        echo 'alias ll="ls -la"'
+        echo 'alias python="python3"'
+        echo 'alias pip="pip3"'
+        echo 'alias k="kubectl"'
+        echo 'alias dc="docker-compose"'
+    } >> ~/.zshrc
+}
 
-# Display the public key
-display_public_key
+main() {
+    log_info "Starting macOS development environment setup..."
+    
+    # Initial setup
+    check_prerequisites
+    setup_sudo_access
+    
+    # Core installations
+    install_xcode_tools
+    install_homebrew
+    install_oh_my_zsh
+    
+    # Package installations
+    install_packages
+    install_casks
+    
+    # Development environment setup
+    setup_databases
+    setup_node
+    setup_python
+    setup_git
+    setup_development_directory
+    setup_shell_customization
+    
+    # Final steps
+    if [ ${#ERRORS[@]} -eq 0 ]; then
+        log_success "Setup completed successfully!"
+        log_info "Please restart your terminal for all changes to take effect"
+    else
+        log_error "Setup completed with ${#ERRORS[@]} errors:"
+        for error in "${ERRORS[@]}"; do
+            log_error "- $error"
+        done
+    fi
+    
+    log_info "Setup log available at: $LOG_FILE"
+}
 
-# Add the SSH key to the SSH agent
-add_key_to_ssh_agent
-
-echo
-echo "All done! You can now use this SSH key with GitHub."
-
-
+# Execute main function
+main
