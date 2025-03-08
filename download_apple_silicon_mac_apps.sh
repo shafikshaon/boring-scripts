@@ -193,6 +193,9 @@ readonly BREW_CASKS=(
     mysqlworkbench
     telegram-desktop
     google-chrome@canary
+    keyboard-cowboy
+    shottr
+    sourcetree
 )
 
 install_packages() {
