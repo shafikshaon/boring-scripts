@@ -197,6 +197,7 @@ readonly BREW_CASKS=(
     whatsapp
     openoffice
     jetbrains-toolbox
+    activitywatch
 )
 
 install_packages() {
