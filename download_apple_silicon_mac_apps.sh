@@ -308,7 +308,7 @@ setup_github_ssh() {
         
         ssh-keygen -t ed25519 -C "$github_email" -f "$key_path" -N ""
         eval "$(ssh-agent -s)"
-        ssh-add "$key_path"
+        ssh-add ~/.ssh/id_ed25519_github
         
         log_success "SSH key generated at $key_path"
         echo "Your public SSH key (add this to GitHub):"
@@ -320,7 +320,7 @@ setup_github_ssh() {
 
 setup_development_directory() {
     log_info "Setting up development directory..."
-    mkdir -p ~/Development/{personal,work,experiments}
+    mkdir -p ~/Workplace/Development/{personal,work,experiments}
     log_success "Development directories created"
 }
 
