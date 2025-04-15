@@ -169,14 +169,13 @@ readonly BREW_PACKAGES=(
 )
 
 readonly BREW_CASKS=(
+    google-chrome
     iterm2
     visual-studio-code
     docker
     dbeaver-community
-    tableplus
     notion
     slack
-    google-chrome
     firefox
     postman
     insomnia
@@ -195,9 +194,9 @@ readonly BREW_CASKS=(
     google-chrome@canary
     keyboard-cowboy
     shottr
-    sourcetree
     whatsapp
     openoffice
+    jetbrains-toolbox
 )
 
 install_packages() {
